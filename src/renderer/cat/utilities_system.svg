@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- Simple cog: outer ring + inner hub + 6 ticks -->
+  <circle cx="12" cy="12" r="6.8" fill="none" stroke="#DAD2FF" stroke-width="1.8"/>
+  <circle cx="12" cy="12" r="2.6" fill="none" stroke="#DAD2FF" stroke-width="1.6"/>
+  <path d="M12 3.2v2.2M12 18.6v2.2M20.8 12h-2.2M5.2 12H3M16.6 7.4l-1.6 1.6M9 15l-1.6 1.6M7.4 7.4L9 9M15 15l1.6 1.6" stroke="#DAD2FF" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

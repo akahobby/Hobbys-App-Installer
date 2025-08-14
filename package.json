@@ -1,0 +1,45 @@
+{
+  "name": "hobbys-app-installer",
+  "version": "1.0.0",
+  "description": "Installer (winget + Chocolatey) with category duplicates & icon fixes",
+  "author": "hobby",
+  "main": "src/main.js",
+  "scripts": {
+    "dev": "electron .",
+    "build:win": "electron-builder --win portable",
+    "build:portable:x64": "electron-builder --win portable --x64 -p never",
+    "build:portable:arm64": "electron-builder --win portable --arm64 -p never",
+    "build:portable:all": "electron-builder --win portable --x64 --arm64 -p never"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.hobby.installer",
+    "productName": "Hobby Installer",
+    "asar": true,
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "requestedExecutionLevel": "asInvoker",
+      "artifactName": "Hobby Installer v1-${arch}.${ext}"
+    }
+  },
+  "productName": "Hobby Installer"
+}

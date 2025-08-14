@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Hobby's App Installer</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'">
+  <style>
+    :root {
+      --bg:#0b0a10; --panel:#121022; --panel2:#171425; --text:#e7e4ff;
+      --muted:#a4a0c9; --accent:#7a4cff; --accent2:#5b39d9; --pill:#1a1530;
+      --okbg:rgba(67,160,110,.12); --ok:#b6f5d1;
+      --scroll:#2a2347; --scrollthumb:#4b3b82; --scrollthumbhover:#5d49a8;
+    }
+    *{ box-sizing:border-box }
+    body{ margin:0; background:var(--bg); color:var(--text); font:14px/1.45 'Segoe UI', system-ui, Roboto, Arial; }
+    ::-webkit-scrollbar{ width:12px; height:12px }
+    ::-webkit-scrollbar-track{ background:var(--scroll) }
+    ::-webkit-scrollbar-thumb{ background:var(--scrollthumb); border-radius:8px; border:2px solid var(--scroll) }
+    ::-webkit-scrollbar-thumb:hover{ background:var(--scrollthumbhover) }
+    header{ position:sticky; top:0; z-index:10; display:flex; align-items:center; gap:12px; padding:10px 16px;
+            background:linear-gradient(180deg,#141127, #0b0a10 80%); border-bottom:1px solid #2a2347; }
+    .brand{ display:flex; align-items:center; gap:10px; }
+    .brand img{ width:24px; height:24px; border-radius:6px; }
+    .title{ font-size:16px; color:#d7cffd; font-weight:600 }
+    .admin { margin-left:6px; font-size:12px; background:#0f1a1a; border:1px solid #2a4a4a; color:#a5e7cf; border-radius:999px; padding:2px 8px }
+    .topbar { margin-left:auto; display:flex; gap:10px; align-items:center }
+    .btn{ background:var(--accent); border:none; color:white; border-radius:999px; padding:8px 12px; cursor:pointer }
+    .btn.secondary{ background:#241c3e; color:#cbbfff; border:1px solid #3a2e62 }
+    .search{ background:#100e1b; border:1px solid #382f63; border-radius:999px; padding:8px 14px; color:var(--text); width:360px }
+    .layout{ display:grid; grid-template-columns: 220px 1fr; }
+    nav{ border-right:1px solid #2a2347; background:#0d0a18; padding:14px 10px; height: calc(100vh - 56px); position:sticky; top:56px; }
+    nav .link{ display:flex; align-items:center; gap:14px; padding:10px 14px; border-radius:10px; color:#cfc6ff; text-decoration:none; margin:10px 0; line-height:1 }
+    nav .link img{ display:block; width:20px; height:20px; object-fit:contain; }
+    nav .link.active{ background:#1a1433; border:1px solid #3a3066; }
+    main{ padding:18px; }
+    .section{ margin:18px 0 }
+    .section h2{ display:flex; align-items:center; gap:10px; justify-content:space-between; font-size:16px; color:#d6d1ff; margin:0 0 10px 6px }
+    .grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:14px }
+    .card{ background:var(--panel2); border:1px solid #2a2347; border-radius:14px; padding:14px; display:flex; align-items:center; gap:12px; box-shadow:0 10px 24px rgba(0,0,0,.25); transition:opacity .2s, filter .2s }
+    .card img{ width:32px; height:32px; border-radius:8px; border:1px solid #2a2347; background:#0f0c1a; }
+    .card.installed{ opacity:.55; filter:grayscale(.3) brightness(.9) }
+    .name{ font-weight:600; color:#e9e5ff }
+    .source{ color:var(--muted); font-size:12px }
+    .spacer{ flex:1 }
+    .pill-ok{ color:var(--ok); background:var(--okbg); border:1px solid #2b7a55; border-radius:999px; padding:6px 10px }
+    .btn-install{ background: radial-gradient(80% 80% at 20% 20%, #8a66ff 0%, #5a36e0 60%); border:1px solid #4a34a6; color:white; border-radius:999px; padding:8px 14px; cursor:pointer }
+    .toolbar{ display:flex; align-items:center; gap:10px; margin-top:6px }
+    .muted{ color:var(--muted) }
+    .install-all{ margin-left:auto }
+    @media (max-width:1200px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width:800px){ .grid{ grid-template-columns: 1fr; } .search{ width:100% } .layout{ grid-template-columns: 1fr; } nav{ display:none } }
+  
+/* crisp icon tuning */
+nav .link img{
+  width:20px; height:20px; display:block;
+  image-rendering:-webkit-optimize-contrast; image-rendering:optimizeQuality;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <img src="./logo.png" alt="logo"/>
+      <div class="title">Hobby's App Installer</div>
+      <span class="admin">Admin</span>
+    </div>
+    <div class="topbar">
+      <input id="search" class="search" placeholder="Search apps..."/>
+      <button id="btnWinget" class="btn secondary">Get App Installer</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav id="nav"></nav>
+    <main id="app"></main>
+  </div>
+
+  <footer style="text-align:center; padding:16px; color:#a9a1d5; border-top:1px solid #2a2347">
+    © Hobby • Installs third-party software you select. Verify sources before use.
+  </footer>
+
+  <script type="module" src="./renderer.js"></script>
+</body>
+</html>
