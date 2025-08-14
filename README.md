@@ -24,11 +24,11 @@ End-User (Portable)
 
 Build From Source
 - powershell
-- git clone https://github.com/<you>/<repo>.git
+- git clone https://github.com/akahobby/Hobbys-App-Installer.git
 - cd <repo>
 - npm ci
-- npm run dev          # dev (Electron + Vite)
-- npm run build:portable  # portable EXE in /dist
+- npm run dev          #dev (Electron + Vite)
+- npm run build:portable  #portable EXE in /dist
 
 Troubleshooting (quick)
 - Blank UI / slow first paint → re-run as admin; clear %APPDATA%/HobbyInstaller/Cache; try --disable-gpu once.
