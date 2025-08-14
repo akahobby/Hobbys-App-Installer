@@ -24,8 +24,6 @@ End-User (Portable)
 
 Build From Source
 - powershell
-- Copy
-- Edit
 - git clone https://github.com/<you>/<repo>.git
 - cd <repo>
 - npm ci
