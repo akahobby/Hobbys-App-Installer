@@ -67,9 +67,19 @@ nav .link img{
     </div>
     <div class="topbar">
       <input id="search" class="search" placeholder="Search apps..."/>
+      <button id="btnUpgradeAll" class="btn secondary" style="display:none;">Upgrade All</button>
+      <button id="btnChoco" class="btn secondary" style="display:none;">Install Chocolatey</button>
       <button id="btnWinget" class="btn secondary">Get App Installer</button>
     </div>
   </header>
+
+  <div id="upgradePanel" style="display:none; padding:12px 16px; border-bottom:1px solid #2a2347; background:#0d0a18">
+    <div style="display:flex; gap:10px; align-items:center; margin-bottom:8px">
+      <div style="font-weight:600; color:#d7cffd">Winget Upgrade Output</div>
+      <div class="muted" id="upgradeStatus" style="margin-left:auto; color:#a4a0c9">Running…</div>
+    </div>
+    <pre id="upgradeLog" style="margin:0; background:#0b0a10; border:1px solid #2a2347; border-radius:12px; padding:12px; max-height:240px; overflow:auto; font-size:12px; white-space:pre-wrap"></pre>
+  </div>
 
   <div class="layout">
     <nav id="nav"></nav>

@@ -91,12 +91,14 @@ function run(cmd, args, opts={}){
 }
 
 ipcMain.handle('env:check', async () => {
+  await resolveBackendsSimple();
   const c = await run(CHOCO_EXE || 'choco', ['-v']);
   const w = await run(WINGET_EXE || 'winget', ['-v']);
   return { hasChoco: c.code === 0, hasWinget: w.code === 0, chocoVer: c.out.trim(), wingetVer: w.out.trim() };
 });
 
 ipcMain.handle('installed:list', async () => {
+  await resolveBackendsSimple();
   const ch = await run(CHOCO_EXE || 'choco', ['list', '--localonly']);
   const wg = await run(WINGET_EXE || 'winget', ['list', '--accept-source-agreements']);
 
@@ -169,11 +171,87 @@ ipcMain.handle('install:choco', async (_e, idOrPayload) => {
 });
 
 ipcMain.handle('install:winget', async (_e, spec) => {
+  await resolveBackendsSimple();
+  spec = spec || {};
+  const src = spec.source ? ['--source', spec.source] : [];
+  const common = ['--accept-source-agreements', '--accept-package-agreements', '--silent', '-h'];
+
   let args;
-  if (spec.id) args = ['install', '--id', spec.id, '--accept-source-agreements', '--accept-package-agreements', '--silent', '-h', '--exact'];
-  else args = ['install', '--query', spec.query, '--accept-source-agreements', '--accept-package-agreements', '--silent', '-h'];
+  if (spec.mode === 'upgrade') {
+    if (spec.id) args = ['upgrade', '--id', spec.id, '--exact', ...src, ...common];
+    else args = ['upgrade', '--all', ...src, ...common];
+  } else {
+    if (spec.id) args = ['install', '--id', spec.id, '--exact', ...src, ...common];
+    else args = ['install', '--query', spec.query || '', ...src, ...common];
+  }
+
   const r = await run(WINGET_EXE || 'winget', args);
   return { code: r.code, out: r.out + r.err };
+});
+
+ipcMain.handle('winget:upgradeAll', async () => {
+  await resolveBackendsSimple();
+  const r = await run(WINGET_EXE || 'winget', [
+    'upgrade','--all',
+    '--accept-source-agreements','--accept-package-agreements',
+    '--silent','-h'
+  ]);
+  return { code: r.code, out: r.out + r.err };
+});
+
+// ---- Streamed winget upgrade (live output to renderer) ----
+let __wingetUpgradeChild = null;
+ipcMain.on('winget:upgradeAll:stream', async (event) => {
+  try {
+    await resolveBackendsSimple();
+    if (__wingetUpgradeChild) {
+      try { event.sender.send('winget:upgradeAll:output', '[Installer] Upgrade already running.\n'); } catch {}
+      try { event.sender.send('winget:upgradeAll:done', { code: 1 }); } catch {}
+      return;
+    }
+
+    const args = [
+      'upgrade','--all',
+      '--accept-source-agreements','--accept-package-agreements',
+      '--silent','-h'
+    ];
+
+    const child = spawn(WINGET_EXE || 'winget', args, { shell: true, windowsHide: true });
+    __wingetUpgradeChild = child;
+
+    const send = (chunk) => {
+      try { event.sender.send('winget:upgradeAll:output', String(chunk)); } catch {}
+    };
+    child.stdout.on('data', d => send(d.toString()));
+    child.stderr.on('data', d => send(d.toString()));
+
+    child.on('close', (code) => {
+      __wingetUpgradeChild = null;
+      try { event.sender.send('winget:upgradeAll:done', { code: Number(code ?? 1) }); } catch {}
+    });
+  } catch (_e) {
+    __wingetUpgradeChild = null;
+    try { event.sender.send('winget:upgradeAll:output', '[Installer] Upgrade failed to start.\n'); } catch {}
+    try { event.sender.send('winget:upgradeAll:done', { code: 1 }); } catch {}
+  }
+});
+
+ipcMain.handle('winget:show', async (_e, { id, source }) => {
+  await resolveBackendsSimple();
+  const src = source ? ['--source', source] : [];
+  const r = await run(WINGET_EXE || 'winget', ['show','--id', id, '--exact', ...src]);
+  return { code: r.code, out: r.out + r.err };
+});
+
+ipcMain.handle('choco:info', async (_e, { id }) => {
+  await resolveBackendsSimple();
+  const r = await run(CHOCO_EXE || 'choco', ['info', id, '-r']);
+  return { code: r.code, out: r.out + r.err };
+});
+
+ipcMain.handle('choco:ensure', async () => {
+  try { await ensureChocoInBackground(); _envQuickRefreshLoop(); } catch {}
+  return { ok: true };
 });
 
 ipcMain.handle('open:appinstaller', () => {

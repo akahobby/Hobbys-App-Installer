@@ -3,6 +3,11 @@ const navEl = el('#nav');
 const appEl = el('#app');
 const searchEl = el('#search');
 const btnWinget = el('#btnWinget');
+const btnChoco = el('#btnChoco');
+const btnUpgradeAll = el('#btnUpgradeAll');
+const upgradePanel = el('#upgradePanel');
+const upgradeLog = el('#upgradeLog');
+const upgradeStatus = el('#upgradeStatus');
 
 function keyify(name){
   return name.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
@@ -224,8 +229,13 @@ async function installOne(item){
           : (item.id || item.chocoId || item.name);
         res = await window.native.chocoInstall(payload);
       } else {
-        const spec = item.wingetId ? { id:item.wingetId } : { query:(item.wingetId || item.name) };
+        const spec = item.wingetId ? { id:item.wingetId, source:item.wingetSource } : { query:(item.wingetQuery || item.name), source:item.wingetSource };
         res = await window.native.wingetInstall(spec);
+        // Fallback: if winget fails and we have a Chocolatey id, try choco.
+        if (res && res.code !== 0 && state.hasChoco && (item.chocoId || (item.source !== 'choco' && item.id))) {
+          const chocoId = item.chocoId || item.id;
+          try { res = await window.native.chocoInstall(chocoId); } catch {}
+        }
       }
     } catch (e) {
       res = { code: 1, out: String(e) };
@@ -273,6 +283,15 @@ function section(title, items){
   return sec;
 }
 
+
+function updateTopbar(){
+  try{
+    if (btnWinget) btnWinget.style.display = state.hasWinget ? 'none' : '';
+    if (btnChoco) btnChoco.style.display = state.hasChoco ? 'none' : '';
+    if (btnUpgradeAll) btnUpgradeAll.style.display = state.hasWinget ? '' : 'none';
+  } catch {}
+}
+
 function render(){
   appEl.innerHTML = '';
   const groups = new Map();
@@ -286,6 +305,7 @@ function render(){
     const items = groups.get(cat) || [];
     if (items.length) appEl.appendChild(section(cat, items));
   }
+  updateTopbar();
   nav();
 }
 
@@ -299,11 +319,94 @@ async function refreshInstalled(){
 
 searchEl.addEventListener('input', () => render());
 btnWinget.addEventListener('click', () => window.native.openAppInstaller());
+if (btnChoco) btnChoco.addEventListener('click', async () => {
+  btnChoco.disabled = true;
+  try {
+    await window.native.ensureChoco();
+    const env = await window.native.envCheck();
+    state.hasChoco = env.hasChoco; state.hasWinget = env.hasWinget;
+    await refreshInstalled();
+    render();
+  } catch (e) {
+    alert('Chocolatey install failed or was cancelled.');
+  } finally {
+    btnChoco.disabled = false;
+  }
+});
+if (btnUpgradeAll) btnUpgradeAll.addEventListener('click', async () => {
+  if (!state.hasWinget) return;
+  const ok = window.confirm('Run Winget upgrade --all now?');
+  if (!ok) return;
+  btnUpgradeAll.disabled = true;
+
+  const canStream = window.native
+    && typeof window.native.wingetUpgradeAllStream === 'function'
+    && typeof window.native.onWingetUpgradeOutput === 'function'
+    && typeof window.native.onWingetUpgradeDone === 'function';
+
+  // If streaming isn't available for any reason, fall back to the old behavior.
+  if (!canStream) {
+    try {
+      const res = await window.native.wingetUpgradeAll();
+      if (res.code === 0) {
+        await refreshInstalled();
+        render();
+        alert('Upgrade complete.');
+      } else {
+        alert('Upgrade finished with errors:\n\n' + (res.out || '').slice(-1400));
+      }
+    } catch (e) {
+      alert('Upgrade failed: ' + String(e));
+    } finally {
+      btnUpgradeAll.disabled = false;
+    }
+    return;
+  }
+
+  // Streaming UI (live winget output)
+  try {
+    if (upgradePanel) upgradePanel.style.display = '';
+    if (upgradeStatus) upgradeStatus.textContent = 'Running…';
+    if (upgradeLog) upgradeLog.textContent = '';
+
+    const offOut = window.native.onWingetUpgradeOutput((chunk) => {
+      if (!upgradeLog) return;
+      upgradeLog.textContent += chunk;
+      upgradeLog.scrollTop = upgradeLog.scrollHeight;
+    });
+
+    const offDone = window.native.onWingetUpgradeDone(async (payload) => {
+      try { if (offOut) offOut(); } catch {}
+      try { if (offDone) offDone(); } catch {}
+
+      const code = payload && typeof payload.code === 'number' ? payload.code : 1;
+      if (upgradeStatus) upgradeStatus.textContent = `Finished (exit code ${code})`;
+
+      try { await refreshInstalled(); } catch {}
+      try { render(); } catch {}
+
+      btnUpgradeAll.disabled = false;
+
+      if (code === 0) {
+        alert('Upgrade complete.');
+      } else {
+        const tail = upgradeLog ? upgradeLog.textContent.slice(-1800) : '';
+        alert('Upgrade finished with errors.\n\n' + tail);
+      }
+    });
+
+    window.native.wingetUpgradeAllStream();
+  } catch (e) {
+    btnUpgradeAll.disabled = false;
+    alert('Upgrade failed: ' + String(e));
+  }
+});
 
 (async function init(){
   const env = await window.native.envCheck();
   state.hasChoco = env.hasChoco;
   state.hasWinget = env.hasWinget;
+  try { updateTopbar(); } catch {}
   await refreshInstalled();
   render();
 })();
