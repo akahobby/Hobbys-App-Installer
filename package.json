@@ -1,6 +1,6 @@
 {
   "name": "hobbys-app-installer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Installer (winget + Chocolatey) with category duplicates & icon fixes",
   "author": "hobby",
   "main": "src/main.js",
