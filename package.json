@@ -1,6 +1,6 @@
 {
   "name": "hobbys-app-installer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Installer (winget + Chocolatey) with category duplicates & icon fixes",
   "author": "hobby",
   "main": "src/main.js",
@@ -9,7 +9,8 @@
     "build:win": "electron-builder --win portable",
     "build:portable:x64": "electron-builder --win portable --x64 -p never",
     "build:portable:arm64": "electron-builder --win portable --arm64 -p never",
-    "build:portable:all": "electron-builder --win portable --x64 --arm64 -p never"
+    "build:portable:all": "electron-builder --win portable --x64 --arm64 -p never",
+    "verify:catalog": "node scripts/verifyCatalog.js"
   },
   "dependencies": {},
   "devDependencies": {
