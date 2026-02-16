@@ -1,0 +1,22 @@
+appId: com.hobby.universalinstaller
+productName: Hobby's App Installer
+directories:
+  output: dist
+  buildResources: build
+files:
+  - "src/**/*"
+  - "resources/**/*"
+asar: true
+
+win:
+  target:
+    - portable
+  artifactName: "${productName}-${version}-${arch}.${ext}"
+  requestedExecutionLevel: requireAdministrator
+  icon: "build/icon.ico"
+
+portable: {}
+
+extraResources:
+  - from: resources
+    to: resources
