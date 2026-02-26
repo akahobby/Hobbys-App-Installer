@@ -8,6 +8,17 @@ const btnUpgradeAll = el('#btnUpgradeAll');
 const upgradePanel = el('#upgradePanel');
 const upgradeLog = el('#upgradeLog');
 const upgradeStatus = el('#upgradeStatus');
+const CATEGORY_ICON_MAP = {
+  'Essentials':'essentials',
+  'Browsers':'browsers',
+  'Gaming':'gaming',
+  'GPU Tools':'gpu_tools',
+  'Performance & Tweaks':'performance_tweaks',
+  'Media & Audio':'media_audio',
+  'Utilities - System':'utilities_system',
+  'Drivers':'drivers',
+  'Communication':'communication'
+};
 
 function keyify(name){
   return name.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
@@ -45,7 +56,7 @@ const CATALOG = [
   { cat:'Media & Audio', name:'Spotify', source:'winget', wingetId:'Spotify.Spotify' },
   { cat:'Media & Audio', name:'VLC', source:'winget', wingetId:'VideoLAN.VLC', id:'vlc' },
   { cat:'Media & Audio', name:'OBS Studio', source:'winget', wingetId:'OBSProject.OBSStudio', id:'obs-studio' },
-  { cat:'Media & Audio', name:'NVIDIA Broadcast', source:'url', id:'nvidia-broadcast' , action:'openUrl', url:'https://international.download.nvidia.com/Windows/broadcast/2.0.2/NVIDIA_Broadcast_v2.0.2.31240911.exe'},
+  { cat:'Media & Audio', name:'NVIDIA Broadcast', source:'url', id:'nvidia-broadcast' , action:'openUrl', url:'https://www.nvidia.com/en-us/geforce/broadcasting/broadcast-app/'},
   { cat:'Media & Audio', name:'HandBrake', source:'winget', wingetId:'HandBrake.HandBrake', id:'handbrake' },
 
   // Utilities - System
@@ -59,8 +70,8 @@ const CATALOG = [
   { cat:'Utilities - System', name:'CrystalDiskMark', source:'winget', wingetId:'CrystalDewWorld.CrystalDiskMark', id:'crystaldiskmark' },
   { cat:'Utilities - System', name:'Intel DSA', source:'winget', wingetId:'Intel.IntelDriverAndSupportAssistant', id:'intel-dsa' },
   { cat:'Utilities - System', name:'Dropbox', source:'winget', wingetId:'Dropbox.Dropbox', id:'dropbox' },
-  { cat:'Utilities - System', name:'DirectX Runtime', source:'url', id:'directx' , action:'openUrl', url:'https://us5-dl.techpowerup.com/files/BjOuFWLv7b-somehATIZKg/1755170591/DirectX-Redist-Jun-2010.zip'},
-  { cat:'Utilities - System', name:'VC++ 2015–2022', source:'url', id:'vcredist140' , check:'microsoft-vcredist-2015-x64', action:'openUrl', url:'https://us9-dl.techpowerup.com/files/yLcsXEkuEzocEm6ivysimg/1755170511/Visual-C-Runtimes-All-in-One-Jul-2025.zip'},
+  { cat:'Utilities - System', name:'DirectX Runtime', source:'url', id:'directx' , action:'openUrl', url:'https://www.microsoft.com/en-us/download/details.aspx?id=35'},
+  { cat:'Utilities - System', name:'VC++ 2015–2022', source:'url', id:'vcredist140' , check:'microsoft-vcredist-2015-x64', action:'openUrl', url:'https://aka.ms/vs/17/release/vc_redist.x64.exe'},
   { cat:'Utilities - System', name:'Logitech G HUB', source:'winget', wingetId:'Logitech.GHUB' },
   { cat:'Utilities - System', name:'Razer Synapse', source:'winget', wingetId:'RazerInc.RazerInstaller.Synapse3' },
   { cat:'Utilities - System', name:'Corsair iCUE', source:'choco', id:'icue', wingetId:'Corsair.iCUE.5' },
@@ -95,13 +106,22 @@ const CATALOG = [
   // Communication
   { cat:'Communication', name:'Discord', source:'winget', wingetId:'Discord.Discord', id:'discord' },
   { cat:'Communication', name:'Slack', source:'winget', wingetId:'SlackTechnologies.Slack', id:'slack' },
-  { cat:'Communication', name:'Telegram', source:'winget', wingetId:'Telegram.TelegramDesktop', id:'telegram' },
-  { cat:'Communication', name:'WhatsApp', source:'winget', wingetId:'9NKSQGP7F2NH' }
+  { cat:'Communication', name:'Telegram', source:'winget', wingetId:'Telegram.TelegramDesktop', id:'telegram' }
 ];
 
 const ORDER = ['Essentials','Browsers','Gaming','GPU Tools','Performance & Tweaks','Media & Audio','Utilities - System','Drivers','Communication'];
 
 const state = { hasChoco:false, hasWinget:false, installed:new Set(), installing:new Map(), drivers:{} };
+const navLinks = new Map();
+const CATALOG_BY_CAT = new Map(ORDER.map(cat => [cat, []]));
+let renderQueued = false;
+let searchDebounceTimer = null;
+
+for (const item of CATALOG){
+  item._nameLower = item.name.toLowerCase();
+  if (!CATALOG_BY_CAT.has(item.cat)) CATALOG_BY_CAT.set(item.cat, []);
+  CATALOG_BY_CAT.get(item.cat).push(item);
+}
 
 // --- sticky installed cache (persists across reloads) ---
 const STICKY_KEY = 'hobby.installed.sticky.v1';
@@ -116,15 +136,30 @@ const stickyInstalled = _loadSticky();
 function addStickyTokens(tokens){
   let changed = false;
   for (const t of tokens){
-    const a = slug(t), b = keyify(t);
-    if (!stickyInstalled.has(a)) { stickyInstalled.add(a); changed = true; }
-    if (!stickyInstalled.has(b)) { stickyInstalled.add(b); changed = true; }
+    for (const token of tokenForms(t)){
+      if (!stickyInstalled.has(token)) { stickyInstalled.add(token); changed = true; }
+    }
   }
   if (changed) _saveSticky(stickyInstalled);
 }
 
 
 function slug(s){ return (s||'').toLowerCase(); }
+function tokenForms(value){
+  const text = String(value || '');
+  if (!text) return [];
+  const a = slug(text);
+  const b = keyify(text);
+  return a === b ? [a] : [a, b];
+}
+function scheduleRender(){
+  if (renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(() => {
+    renderQueued = false;
+    render();
+  });
+}
 function parseInstalled(chocoText, wingetText){
   const set = new Set();
   chocoText.split(/\r?\n/).forEach(line => { const m = line.match(/^([\w\-\.\+]+)\s/); if (m) set.add(slug(m[1])); });
@@ -132,6 +167,7 @@ function parseInstalled(chocoText, wingetText){
   return set;
 }
 function availableSource(item){
+  if (item.action === 'openUrl' || item.source === 'url') return 'link';
   if (item.source === 'choco'){
     if (state.hasChoco) return 'choco';
     if (state.hasWinget && (item.wingetId || item.wingetQuery)) return 'winget';
@@ -152,46 +188,64 @@ function isInstalled(item){
     c.push(String(item));
   }
   for (const t of c){
-    if (state.installed.has(slug(t)) || state.installed.has(keyify(t))) return true;
-    if (stickyInstalled.has(slug(t)) || stickyInstalled.has(keyify(t))) return true;
+    for (const token of tokenForms(t)){
+      if (state.installed.has(token) || stickyInstalled.has(token)) return true;
+    }
   }
   return false;
 }
 
 
-function nav(){
-  navEl.innerHTML = '';
-  const map = {
-    'Essentials':'essentials',
-    'Browsers':'browsers',
-    'Gaming':'gaming',
-    'GPU Tools':'gpu_tools',
-    'Performance & Tweaks':'performance_tweaks',
-    'Media & Audio':'media_audio',
-    'Utilities - System':'utilities_system',
-    'Drivers':'drivers',
-    'Communication':'communication'
-  };
+function activeCategoryFromHash(){
+  const raw = location.hash.slice(1);
+  if (!raw) return '';
+  try { return decodeURIComponent(raw); } catch { return raw; }
+}
+function updateNavActive(){
+  const active = activeCategoryFromHash();
+  for (const [cat, link] of navLinks){
+    if (!link) continue;
+    link.classList.toggle('active', cat === active);
+  }
+}
+function ensureNav(){
+  if (navLinks.size) { updateNavActive(); return; }
+  const frag = document.createDocumentFragment();
   for (const cat of ORDER){
     const a = document.createElement('a');
     a.href = `#${encodeURIComponent(cat)}`;
     a.className = 'link';
-    const file = map[cat] || 'essentials';
+    const file = CATEGORY_ICON_MAP[cat] || 'essentials';
     a.innerHTML = `<img src="./cat/${file}.svg" alt=""> <span>${cat}</span>`;
-    if (location.hash.slice(1) === encodeURIComponent(cat)) a.classList.add('active');
-    a.onclick = () => { location.hash = encodeURIComponent(cat); scrollToCat(cat); };
-    navEl.appendChild(a);
+    a.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const nextHash = `#${encodeURIComponent(cat)}`;
+      if (location.hash !== nextHash) location.hash = nextHash;
+      scrollToCat(cat);
+      updateNavActive();
+    });
+    navLinks.set(cat, a);
+    frag.appendChild(a);
   }
+  navEl.innerHTML = '';
+  navEl.appendChild(frag);
+  updateNavActive();
 }
 
 function scrollToCat(cat){ const h = el(`[data-cat="${cat}"]`); if (h) h.scrollIntoView({ behavior:'smooth', block:'start' }); }
+window.addEventListener('hashchange', () => {
+  updateNavActive();
+  const cat = activeCategoryFromHash();
+  if (cat) scrollToCat(cat);
+});
 
 function card(item){
   const div = document.createElement('div'); div.className = 'card';
   const installed = isInstalled(item);
   const installing = state.installing.get(item.name);
   const src = availableSource(item);
-  const srcLabel = src === 'choco' ? 'Chocolatey' : src === 'winget' ? 'winget' : '—';
+  const srcLabel = src === 'choco' ? 'Chocolatey' : src === 'winget' ? 'winget' : src === 'link' ? 'Link' : '—';
+  const actionLabel = item.action === 'openUrl' ? 'Open Link' : 'Install';
   if (installed) div.classList.add('installed');
   div.innerHTML = `
     <img src="${iconPath(item.name)}" alt="icon"/>
@@ -199,27 +253,43 @@ function card(item){
     <div class="spacer"></div>
     <div class="meta">
       ${installed ? `<span class="pill-ok">Installed</span>` :
-        src ? `<button class="btn-install" data-name="${item.name}">${installing ? installing : 'Install'}</button>` :
+        src ? `<button class="btn-install" data-name="${item.name}">${installing ? installing : actionLabel}</button>` :
               `<span class="muted">No installer</span>`}
     </div>`;
   const btn = div.querySelector('button.btn-install');
-  if (btn){ btn.addEventListener('click', async () => { state.installing.set(item.name, 'Installing…'); render(); await installOne(item); }); }
+  if (btn){ btn.addEventListener('click', async () => { await installOne(item); }); }
   return div;
 }
 
+async function openExternal(url){
+  const target = String(url || '');
+  if (!target) return;
+  if (window.hobby && typeof window.hobby.openUrl === 'function'){
+    await window.hobby.openUrl(target);
+    return;
+  }
+  window.open(target, '_blank');
+}
+function markInstalled(item){
+  for (const t of [item.check, item.id, item.wingetId, item.name]){
+    for (const token of tokenForms(t)) state.installed.add(token);
+  }
+}
 async function installOne(item){
-  // Mark as installing and ensure we always clear it
-  state.installing.set(item.name, 'Installing');
-  render();
+  let markedInstalling = false;
   try {
     if (item.advanced){
       const ok = window.confirm('This is an advanced tool. Continue to install/open ' + item.name + '?');
       if (!ok) return;
     }
-    if (item.action === 'openUrl'){ window.open(item.url, '_blank'); return; }
+    if (item.action === 'openUrl'){ await openExternal(item.url); return; }
 
     const src = availableSource(item);
     if (!src){ alert('No installer source available for ' + item.name); return; }
+
+    state.installing.set(item.name, 'Installing…');
+    markedInstalling = true;
+    scheduleRender();
 
     let res = { code: 1, out: '' };
     try {
@@ -249,21 +319,16 @@ async function installOne(item){
       text.includes('no applicable update found');
 
     if (res.code === 0 || okNoUpgrade){
-      if (item.check){ state.installed.add(slug(item.check)); state.installed.add(keyify(item.check)); }
-      if (item.id){ state.installed.add(slug(item.id)); state.installed.add(keyify(item.id)); }
-      if (item.wingetId){ state.installed.add(slug(item.wingetId)); state.installed.add(keyify(item.wingetId)); }
-      state.installed.add(slug(item.name)); state.installed.add(keyify(item.name));
-      if (typeof addStickyTokens === 'function'){
-        addStickyTokens([item.check, item.wingetId, item.id, item.name].filter(Boolean));
-      }
-      render();
-      setTimeout(async () => { try { await refreshInstalled(); render(); } catch {} }, 150);
+      markInstalled(item);
+      addStickyTokens([item.check, item.wingetId, item.id, item.name].filter(Boolean));
+      scheduleRender();
+      setTimeout(async () => { try { await refreshInstalled(); scheduleRender(); } catch {} }, 150);
     } else {
       alert('Failed to install ' + item.name + '\n\n' + (res.out || '').slice(-1200));
     }
   } finally {
-    state.installing.delete(item.name);
-    render();
+    if (markedInstalling) state.installing.delete(item.name);
+    scheduleRender();
   }
 }
 
@@ -293,31 +358,34 @@ function updateTopbar(){
 }
 
 function render(){
-  appEl.innerHTML = '';
-  const groups = new Map();
   const q = (searchEl.value || '').trim().toLowerCase();
-  for (const it of CATALOG){
-    if (q && !it.name.toLowerCase().includes(q)) continue;
-    if (!groups.has(it.cat)) groups.set(it.cat, []);
-    groups.get(it.cat).push(it);
-  }
+  const frag = document.createDocumentFragment();
   for (const cat of ORDER) {
-    const items = groups.get(cat) || [];
-    if (items.length) appEl.appendChild(section(cat, items));
+    const allItems = CATALOG_BY_CAT.get(cat) || [];
+    if (!allItems.length) continue;
+    const items = q ? allItems.filter(it => it._nameLower.includes(q)) : allItems;
+    if (items.length) frag.appendChild(section(cat, items));
   }
+  appEl.innerHTML = '';
+  appEl.appendChild(frag);
   updateTopbar();
-  nav();
+  ensureNav();
 }
 
 async function refreshInstalled(){
-  for (const t of stickyInstalled) state.installed.add(t);
   const { choco, winget, specials, drivers } = await window.native.listInstalled();
   state.installed = parseInstalled(choco, winget);
-  (specials||[]).forEach(s => state.installed.add(slug(s)));
+  for (const t of stickyInstalled) state.installed.add(t);
+  for (const s of (specials || [])){
+    for (const token of tokenForms(s)) state.installed.add(token);
+  }
   state.drivers = drivers || {};
 }
 
-searchEl.addEventListener('input', () => render());
+searchEl.addEventListener('input', () => {
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(() => scheduleRender(), 100);
+});
 btnWinget.addEventListener('click', () => window.native.openAppInstaller());
 if (btnChoco) btnChoco.addEventListener('click', async () => {
   btnChoco.disabled = true;
@@ -326,7 +394,7 @@ if (btnChoco) btnChoco.addEventListener('click', async () => {
     const env = await window.native.envCheck();
     state.hasChoco = env.hasChoco; state.hasWinget = env.hasWinget;
     await refreshInstalled();
-    render();
+    scheduleRender();
   } catch (e) {
     alert('Chocolatey install failed or was cancelled.');
   } finally {
@@ -350,7 +418,7 @@ if (btnUpgradeAll) btnUpgradeAll.addEventListener('click', async () => {
       const res = await window.native.wingetUpgradeAll();
       if (res.code === 0) {
         await refreshInstalled();
-        render();
+        scheduleRender();
         alert('Upgrade complete.');
       } else {
         alert('Upgrade finished with errors:\n\n' + (res.out || '').slice(-1400));
@@ -383,7 +451,7 @@ if (btnUpgradeAll) btnUpgradeAll.addEventListener('click', async () => {
       if (upgradeStatus) upgradeStatus.textContent = `Finished (exit code ${code})`;
 
       try { await refreshInstalled(); } catch {}
-      try { render(); } catch {}
+      try { scheduleRender(); } catch {}
 
       btnUpgradeAll.disabled = false;
 
@@ -403,12 +471,15 @@ if (btnUpgradeAll) btnUpgradeAll.addEventListener('click', async () => {
 });
 
 (async function init(){
+  ensureNav();
   const env = await window.native.envCheck();
   state.hasChoco = env.hasChoco;
   state.hasWinget = env.hasWinget;
   try { updateTopbar(); } catch {}
   await refreshInstalled();
   render();
+  const initialCat = activeCategoryFromHash();
+  if (initialCat) scrollToCat(initialCat);
 })();
 
 
@@ -422,7 +493,7 @@ if (btnUpgradeAll) btnUpgradeAll.addEventListener('click', async () => {
         if (typeof caps.hasChoco === 'boolean') { try { state.hasChoco = caps.hasChoco; } catch {} }
         if (typeof caps.hasWinget === 'boolean') { try { state.hasWinget = caps.hasWinget; } catch {} }
         last = { hasChoco: caps.hasChoco, hasWinget: caps.hasWinget };
-        try { render(); } catch {}
+        try { scheduleRender(); } catch {}
       }
     } catch {}
     setTimeout(tick, 1500);
