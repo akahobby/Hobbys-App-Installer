@@ -15,7 +15,7 @@ npm start
 npm run build
 ```
 
-Output goes to `dist/` as `Bulk App Installer-*-portable.exe`.
+Output goes to `dist/` as `Hobbys App Installer-*-portable.exe`.
 
 ## Catalog
 

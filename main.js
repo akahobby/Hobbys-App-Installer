@@ -233,7 +233,7 @@ async function resolveDirectDownloadUrl(dd) {
       const res = await fetch(apiUrl, {
         headers: {
           Accept: 'application/vnd.github+json',
-          'User-Agent': 'bulk-app-installer'
+          'User-Agent': 'hobbys-app-installer'
         }
       });
       if (!res.ok) {
@@ -441,7 +441,7 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false
     },
-    title: 'Bulk App Installer'
+    title: 'Hobbys App Installer'
   });
 
   mainWindow.setMenuBarVisibility(false);

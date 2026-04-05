@@ -1,7 +1,7 @@
 {
-  "name": "bulk-app-installer",
+  "name": "hobbys-app-installer",
   "version": "1.0.0",
-  "description": "Bulk install and update Windows apps via WinGet, Chocolatey, and Microsoft Store",
+  "description": "Portable Windows app installer using WinGet, Chocolatey, and direct downloads",
   "main": "main.js",
   "author": "",
   "license": "MIT",
@@ -14,8 +14,8 @@
     "electron-builder": "^25.1.8"
   },
   "build": {
-    "appId": "com.bulkappinstaller.app",
-    "productName": "Bulk App Installer",
+    "appId": "com.akahobby.hobbysappinstaller",
+    "productName": "Hobbys App Installer",
     "directories": {
       "output": "dist"
     },
