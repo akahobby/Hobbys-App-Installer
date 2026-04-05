@@ -1,0 +1,497 @@
+[
+  {
+    "id": "git",
+    "name": "Git",
+    "category": "Development",
+    "wingetId": "Git.Git",
+    "chocoId": "git"
+  },
+  {
+    "id": "nodejs-lts",
+    "name": "Node.js (LTS)",
+    "category": "Development",
+    "wingetId": "OpenJS.NodeJS.LTS",
+    "chocoId": "nodejs-lts"
+  },
+  {
+    "id": "vscode",
+    "name": "Visual Studio Code",
+    "category": "Development",
+    "wingetId": "Microsoft.VisualStudioCode",
+    "chocoId": "vscode"
+  },
+  {
+    "id": "python312",
+    "name": "Python 3.12",
+    "category": "Development",
+    "wingetId": "Python.Python.3.12",
+    "chocoId": "python312"
+  },
+  {
+    "id": "docker-desktop",
+    "name": "Docker Desktop",
+    "category": "Development",
+    "wingetId": "Docker.DockerDesktop",
+    "chocoId": "docker-desktop"
+  },
+  {
+    "id": "github-desktop",
+    "name": "GitHub Desktop",
+    "category": "Development",
+    "wingetId": "GitHub.GitHubDesktop",
+    "chocoId": "github-desktop"
+  },
+  {
+    "id": "windows-terminal",
+    "name": "Windows Terminal",
+    "category": "Development",
+    "wingetId": "Microsoft.WindowsTerminal",
+    "chocoId": "microsoft-windows-terminal"
+  },
+  {
+    "id": "powershell",
+    "name": "PowerShell 7",
+    "category": "Development",
+    "wingetId": "Microsoft.PowerShell",
+    "chocoId": "powershell-core"
+  },
+  {
+    "id": "postman",
+    "name": "Postman",
+    "category": "Development",
+    "wingetId": "Postman.Postman",
+    "chocoId": "postman"
+  },
+  {
+    "id": "7zip",
+    "name": "7-Zip",
+    "category": "Utilities",
+    "wingetId": "7zip.7zip",
+    "chocoId": "7zip"
+  },
+  {
+    "id": "winrar",
+    "name": "WinRAR",
+    "category": "Utilities",
+    "wingetId": "RARLab.WinRAR",
+    "chocoId": "winrar"
+  },
+  {
+    "id": "notepadplusplus",
+    "name": "Notepad++",
+    "category": "Utilities",
+    "wingetId": "Notepad++.Notepad++",
+    "chocoId": "notepadplusplus"
+  },
+  {
+    "id": "sharex",
+    "name": "ShareX",
+    "category": "Utilities",
+    "wingetId": "ShareX.ShareX",
+    "chocoId": "sharex"
+  },
+  {
+    "id": "powertoys",
+    "name": "Microsoft PowerToys",
+    "category": "Utilities",
+    "wingetId": "Microsoft.PowerToys",
+    "chocoId": "powertoys"
+  },
+  {
+    "id": "wiztree",
+    "name": "WizTree",
+    "category": "Utilities",
+    "wingetId": "AntibodySoftware.WizTree",
+    "chocoId": "wiztree"
+  },
+  {
+    "id": "sysinternals",
+    "name": "Sysinternals Suite",
+    "description": "Process Explorer, Autoruns, Procmon, etc. Chocolatey bundles the live Microsoft suite.",
+    "category": "Utilities",
+    "wingetId": null,
+    "chocoId": "sysinternals"
+  },
+  {
+    "id": "chrome",
+    "name": "Google Chrome",
+    "category": "Browsers",
+    "wingetId": "Google.Chrome",
+    "chocoId": "googlechrome"
+  },
+  {
+    "id": "firefox",
+    "name": "Mozilla Firefox",
+    "category": "Browsers",
+    "wingetId": "Mozilla.Firefox",
+    "chocoId": "firefox"
+  },
+  {
+    "id": "brave",
+    "name": "Brave",
+    "category": "Browsers",
+    "wingetId": "Brave.Brave",
+    "chocoId": "brave"
+  },
+  {
+    "id": "vivaldi",
+    "name": "Vivaldi",
+    "category": "Browsers",
+    "wingetId": "Vivaldi.Vivaldi",
+    "chocoId": "vivaldi"
+  },
+  {
+    "id": "edge",
+    "name": "Microsoft Edge",
+    "category": "Browsers",
+    "wingetId": "Microsoft.Edge",
+    "chocoId": "microsoft-edge"
+  },
+  {
+    "id": "vlc",
+    "name": "VLC media player",
+    "category": "Media",
+    "wingetId": "VideoLAN.VLC",
+    "chocoId": "vlc"
+  },
+  {
+    "id": "spotify",
+    "name": "Spotify",
+    "category": "Media",
+    "wingetId": "Spotify.Spotify",
+    "chocoId": "spotify"
+  },
+  {
+    "id": "spicetify",
+    "name": "Spicetify",
+    "description": "Themes and extensions for Spotify (install Spotify first, then run spicetify in a terminal).",
+    "category": "Media",
+    "wingetId": "Spicetify.Spicetify",
+    "chocoId": "spicetify-cli"
+  },
+  {
+    "id": "obs",
+    "name": "OBS Studio",
+    "category": "Media",
+    "wingetId": "OBSProject.OBSStudio",
+    "chocoId": "obs-studio"
+  },
+  {
+    "id": "discord",
+    "name": "Discord",
+    "category": "Communication",
+    "wingetId": "Discord.Discord",
+    "chocoId": "discord"
+  },
+  {
+    "id": "vencord",
+    "name": "Vencord",
+    "description": "Installer for the Vencord Discord client mod (run after Discord is installed).",
+    "category": "Communication",
+    "wingetId": "Vendicated.Vencord",
+    "chocoId": null
+  },
+  {
+    "id": "nvcleanstall",
+    "name": "NVCleanstall",
+    "description": "TechPowerUp tool for a clean NVIDIA driver install.",
+    "category": "GPU & vendor tools",
+    "wingetId": "TechPowerUp.NVCleanstall",
+    "chocoId": "nvcleanstall"
+  },
+  {
+    "id": "nvidia-broadcast",
+    "name": "NVIDIA Broadcast",
+    "description": "AI noise removal and virtual background (requires supported NVIDIA GPU).",
+    "category": "GPU & vendor tools",
+    "wingetId": "Nvidia.Broadcast",
+    "chocoId": null
+  },
+  {
+    "id": "msi-afterburner",
+    "name": "MSI Afterburner",
+    "description": "GPU overclocking, fan curves, and on-screen display (NVIDIA and AMD).",
+    "category": "GPU & vendor tools",
+    "wingetId": "Guru3D.Afterburner",
+    "chocoId": "msiafterburner"
+  },
+  {
+    "id": "amd-ocat",
+    "name": "AMD OCAT",
+    "description": "Open Capture and Analytics Tool: FPS overlay and frame timing (D3D11, D3D12, Vulkan).",
+    "category": "GPU & vendor tools",
+    "wingetId": "AMD.OCAT",
+    "chocoId": null
+  },
+  {
+    "id": "amd-ryzen-master",
+    "name": "AMD Ryzen Master",
+    "description": "Ryzen overclocking and monitoring. No WinGet build; Chocolatey pulls the installer from AMD.",
+    "category": "GPU & vendor tools",
+    "wingetId": null,
+    "chocoId": "amd-ryzen-master"
+  },
+  {
+    "id": "amd-software-cloud",
+    "name": "AMD Software (cloud edition)",
+    "description": "WinGet package intended for cloud/Azure-style deployments. For desktop Radeon Adrenalin, use amd.com/support/download/drivers.html",
+    "category": "GPU & vendor tools",
+    "wingetId": "AMD.AMDSoftwareCloudEdition",
+    "chocoId": null
+  },
+  {
+    "id": "intel-xtu",
+    "name": "Intel Extreme Tuning Utility (XTU)",
+    "description": "Intel overclocking, monitoring, and stress (unlocked Intel CPUs only; not for AMD systems).",
+    "category": "GPU & vendor tools",
+    "wingetId": "Intel.IntelExtremeTuningUtility",
+    "chocoId": "intel-xtu"
+  },
+  {
+    "id": "intel-presentmon",
+    "name": "Intel PresentMon",
+    "description": "Gaming performance overlay and frame-time telemetry (works on Intel and AMD GPUs).",
+    "category": "GPU & vendor tools",
+    "wingetId": "Intel.PresentMon",
+    "chocoId": null
+  },
+  {
+    "id": "intel-ipdt",
+    "name": "Intel Processor Diagnostic Tool",
+    "description": "Verifies Intel CPU operating characteristics and stress test.",
+    "category": "GPU & vendor tools",
+    "wingetId": "Intel.ProcessorDiagnosticTool",
+    "chocoId": null
+  },
+  {
+    "id": "intel-ssu",
+    "name": "Intel System Support Utility",
+    "description": "Collects system details and logs for Intel support tickets.",
+    "category": "GPU & vendor tools",
+    "wingetId": "Intel.SystemSupportUtility",
+    "chocoId": null
+  },
+  {
+    "id": "steam",
+    "name": "Steam",
+    "category": "Gaming",
+    "wingetId": "Valve.Steam",
+    "chocoId": "steam"
+  },
+  {
+    "id": "millennium",
+    "name": "Millennium",
+    "description": "Steam Homebrew framework. Always pulls the latest Windows release zip from GitHub; follow the installer if prompted.",
+    "category": "Gaming",
+    "directDownload": {
+      "kind": "zip",
+      "githubLatest": {
+        "owner": "SteamClientHomebrew",
+        "repo": "Millennium",
+        "assetContains": "windows-x86_64.zip"
+      },
+      "exeContains": "millennium"
+    }
+  },
+  {
+    "id": "epic",
+    "name": "Epic Games Launcher",
+    "category": "Gaming",
+    "wingetId": "EpicGames.EpicGamesLauncher",
+    "chocoId": "epicgameslauncher"
+  },
+  {
+    "id": "paint-net",
+    "name": "paint.net",
+    "category": "Graphics",
+    "wingetId": "dotPDNLLC.paintdotnet",
+    "chocoId": "paint.net"
+  },
+  {
+    "id": "gimp",
+    "name": "GIMP",
+    "category": "Graphics",
+    "wingetId": "GIMP.GIMP.3",
+    "chocoId": "gimp"
+  },
+  {
+    "id": "inkscape",
+    "name": "Inkscape",
+    "category": "Graphics",
+    "wingetId": "Inkscape.Inkscape",
+    "chocoId": "inkscape"
+  },
+  {
+    "id": "rufus",
+    "name": "Rufus",
+    "description": "Create bootable USB drives (ISO → UEFI/MBR).",
+    "category": "Boot & discs",
+    "wingetId": "Rufus.Rufus",
+    "chocoId": "rufus"
+  },
+  {
+    "id": "ventoy",
+    "name": "Ventoy",
+    "description": "Multi-boot USB: drop ISOs on the drive without reformatting each time.",
+    "category": "Boot & discs",
+    "wingetId": "Ventoy.Ventoy",
+    "chocoId": "ventoy"
+  },
+  {
+    "id": "anyburn",
+    "name": "AnyBurn",
+    "description": "Burn and rip CDs, DVDs, and disc images.",
+    "category": "Boot & discs",
+    "wingetId": "PowerSoftware.AnyBurn",
+    "chocoId": "anyburn"
+  },
+  {
+    "id": "intel-dsa",
+    "name": "Intel Driver & Support Assistant",
+    "description": "Scan for Intel chipset, graphics, and other driver updates.",
+    "category": "GPU & vendor tools",
+    "wingetId": "Intel.IntelDriverAndSupportAssistant",
+    "chocoId": "intel-dsa"
+  },
+  {
+    "id": "ddu",
+    "name": "Display Driver Uninstaller (DDU)",
+    "description": "Remove NVIDIA / AMD / Intel GPU drivers cleanly (use in Safe Mode when possible).",
+    "category": "GPU & vendor tools",
+    "wingetId": "Wagnardsoft.DisplayDriverUninstaller",
+    "chocoId": "ddu"
+  },
+  {
+    "id": "cpu-z",
+    "name": "CPU-Z",
+    "description": "CPU, motherboard, and RAM information.",
+    "category": "Hardware & benchmarks",
+    "wingetId": "CPUID.CPU-Z",
+    "chocoId": "cpu-z"
+  },
+  {
+    "id": "gpu-z",
+    "name": "GPU-Z",
+    "description": "Graphics card BIOS, clocks, memory, and sensors.",
+    "category": "Hardware & benchmarks",
+    "wingetId": "TechPowerUp.GPU-Z",
+    "chocoId": "gpu-z"
+  },
+  {
+    "id": "hwinfo",
+    "name": "HWiNFO",
+    "description": "Deep hardware reporting and sensors.",
+    "category": "Hardware & benchmarks",
+    "wingetId": "REALiX.HWiNFO",
+    "chocoId": "hwinfo"
+  },
+  {
+    "id": "occt",
+    "name": "OCCT",
+    "description": "Stability tests for CPU, GPU, memory, and power.",
+    "category": "Hardware & benchmarks",
+    "wingetId": "OCBase.OCCT",
+    "chocoId": "occt"
+  },
+  {
+    "id": "cinebench-r23",
+    "name": "Cinebench R23",
+    "description": "Maxon CPU rendering benchmark.",
+    "category": "Hardware & benchmarks",
+    "wingetId": "Maxon.CinebenchR23",
+    "chocoId": "cinebench"
+  },
+  {
+    "id": "y-cruncher",
+    "name": "y-cruncher",
+    "description": "Multi-threaded Pi and stress benchmark; latest Windows zip from the author’s GitHub.",
+    "category": "Hardware & benchmarks",
+    "directDownload": {
+      "kind": "zip",
+      "githubLatest": {
+        "owner": "Mysticial",
+        "repo": "y-cruncher",
+        "assetContains": "y-cruncher"
+      },
+      "exeContains": "y-cruncher"
+    }
+  },
+  {
+    "id": "malwarebytes",
+    "name": "Malwarebytes",
+    "description": "Anti-malware scanner (free tier available).",
+    "category": "Security",
+    "wingetId": "Malwarebytes.Malwarebytes",
+    "chocoId": "malwarebytes"
+  },
+  {
+    "id": "bitdefender",
+    "name": "Bitdefender Antivirus Free",
+    "description": "Bitdefender free agent from WinGet; paid SKUs install from Bitdefender’s site.",
+    "category": "Security",
+    "wingetId": "Bitdefender.Bitdefender",
+    "chocoId": "bitdefender"
+  },
+  {
+    "id": "emsisoft",
+    "name": "Emsisoft Anti-Malware",
+    "description": "No WinGet listing; installs via Chocolatey community package.",
+    "category": "Security",
+    "wingetId": null,
+    "chocoId": "emsisoft-anti-malware"
+  },
+  {
+    "id": "store-media-player",
+    "name": "Media Player",
+    "description": "Microsoft Store app (MSIX). Replaces Groove for local video and music.",
+    "category": "Microsoft Store",
+    "wingetId": "9P5MVNLGG2Q",
+    "wingetSource": "msstore",
+    "chocoId": null
+  },
+  {
+    "id": "store-movies-tv",
+    "name": "Movies & TV",
+    "description": "Microsoft Store app (MSIX) for purchased/rented content and local video.",
+    "category": "Microsoft Store",
+    "wingetId": "9WZDNCRFJ3P2",
+    "wingetSource": "msstore",
+    "chocoId": null
+  },
+  {
+    "id": "store-photos",
+    "name": "Microsoft Photos",
+    "description": "Microsoft Store gallery and basic photo/video editor.",
+    "category": "Microsoft Store",
+    "wingetId": "9WZDNCRFJBH4",
+    "wingetSource": "msstore",
+    "chocoId": null
+  },
+  {
+    "id": "store-xbox",
+    "name": "Xbox",
+    "description": "Xbox app for PC: Game Pass, social, and installs.",
+    "category": "Microsoft Store",
+    "wingetId": "9MV0B5HZVK9Z",
+    "wingetSource": "msstore",
+    "chocoId": null
+  },
+  {
+    "id": "store-snipping-tool",
+    "name": "Snipping Tool",
+    "description": "Store build with screen recording and markup (Windows 11).",
+    "category": "Microsoft Store",
+    "wingetId": "9MZ95KL8MR0L",
+    "wingetSource": "msstore",
+    "chocoId": null
+  },
+  {
+    "id": "store-notepad",
+    "name": "Windows Notepad",
+    "description": "Microsoft Store Notepad (tabs, session restore on supported Windows builds).",
+    "category": "Microsoft Store",
+    "wingetId": "9MSMLRH6LZF3",
+    "wingetSource": "msstore",
+    "chocoId": null
+  }
+]

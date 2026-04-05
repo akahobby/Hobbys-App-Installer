@@ -1,0 +1,58 @@
+{
+  "name": "bulk-app-installer",
+  "version": "1.0.0",
+  "description": "Bulk install and update Windows apps via WinGet, Chocolatey, and Microsoft Store",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.bulkappinstaller.app",
+    "productName": "Bulk App Installer",
+    "directories": {
+      "output": "dist"
+    },
+    "icon": "assets/icon.png",
+    "files": [
+      "package.json",
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "styles.css",
+      "assets/**"
+    ],
+    "extraResources": [
+      {
+        "from": "apps.json",
+        "to": "apps.json"
+      }
+    ],
+    "asar": true,
+    "win": {
+      "icon": "assets/icon.png",
+      "signAndEditExecutable": false,
+      "verifyUpdateCodeSignature": false,
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-portable.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.${ext}"
+    },
+    "compression": "maximum"
+  }
+}
